@@ -6,6 +6,7 @@ import schedule
 
 TOKEN = "429105357:AAHs2gkeSxYljcm8UkKRoM9lmDyJ7DPqj6g"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
+CHAT_ID = "108123177"
 
 def send_http_get_req(req_url):
     response = requests.get(req_url)
@@ -58,18 +59,25 @@ def echo_all(updates):
         except Exception as e:
             print(e)
 
+def send_reminder():
+    #copied send_message
+    url = URL + "sendMessage?text={}&chat_id={}".format("Take a pill!", CHAT_ID)
+    send_http_get_req(url)
+
 
 def main():
     last_update_id = None
     #get bot info to test bot status.
+    #schedule.every(10).minutes.do(send_reminder)
+    schedule.every().day.at("22:11").do(send_reminder)
     bot_inf_resp = get_bot_information()
     respOk = bot_inf_resp["ok"]
     if respOk:
         botIsOk = bot_inf_resp["result"]["is_bot"]
         if botIsOk:
             while True:
+                schedule.run_pending()
                 updates = get_updates(last_update_id)
-
                 if len(updates["result"]) > 0:
                     last_update_id = get_last_update_id(updates) + 1
                     echo_all(updates)

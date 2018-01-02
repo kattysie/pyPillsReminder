@@ -11,8 +11,8 @@ CHAT_ID_A = ""
 ERROR_MESSAGE = "Please enter something correct"
 seen = False
 
-reminder_list = [{"time": "17:40", "message": "Get pill 200"},
-               {"time": "17:46", "message": "Get pill 400"}]
+reminder_list = [{"time": "18:03", "message": "Get pill 200"},
+               {"time": "18:05", "message": "Get pill 400"}]
 
 def send_http_get_req(req_url):
     response = requests.get(req_url)
@@ -71,7 +71,7 @@ def parse_message(updates):  #a copy of echo_all
             chat = update["message"]["chat"]["id"]
             if text == 'done':
                 send_message('Well done!', chat)
-                seen = True
+                schedule.clear('forgot')
             else:
                 send_message(get_commmand(text), chat)
 
@@ -94,7 +94,7 @@ def send_reminder():
 
 def remind_me():
     #schedule.every(1).minutes.do(send_reminder)
-    schedule.every(10).seconds.do(send_reminder)
+    schedule.every(10).seconds.do(send_reminder).tag('forgot')
     # while not seen:
     #     schedule.run_pending()
     return
@@ -104,7 +104,7 @@ def set_schedule():
         mytime = item["time"]
         #mymsg = item["message"]
         #print(mymsg + mytime)
-        schedule.every().day.at(mytime).do(send_reminder)
+        schedule.every().day.at(mytime).do(send_reminder).tag('reminder_1')
         seen = False
     if not seen:
         remind_me()

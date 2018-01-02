@@ -6,6 +6,7 @@ import schedule
 
 TOKEN = "429105357:AAHs2gkeSxYljcm8UkKRoM9lmDyJ7DPqj6g"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
+CHAT_ID_K = 108123177
 
 def send_http_get_req(req_url):
     response = requests.get(req_url)

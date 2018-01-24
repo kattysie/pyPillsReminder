@@ -18,7 +18,7 @@ reminder_list_A = [{"time": "09:00", "message": "Take 200 pill"},
 
 reminder_list_K = [{"time": "11:15", "message": "Take a break", "repeat": 'False'},
                    {"time": "14:00", "message": "Have a lunch", "repeat": 'False'},
-                   {"time": "17:00", "message": "Eat a snack", "repeat": 'False'}]  # add repeat True/False setting
+                   {"time": "17:10", "message": "Eat a snack", "repeat": 'False'}]  # add repeat True/False setting
 
 
 def set_schedule(rem_list):
@@ -78,9 +78,9 @@ def get_last_update_id(updates):
 def parse_message(updates):
     for update in updates["result"]:
         try:
-            text = (update["message"]["text"]).rstrip()
+            text = (update["message"]["text"]).rstrip().lower()
             chat = update["message"]["chat"]["id"]
-            if text == 'done':
+            if 'done' == text:
                 send_message('Well done!', chat)
                 schedule.clear('forgot')
             # elif text == 'add':

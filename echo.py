@@ -3,7 +3,20 @@ import requests
 import time
 import urllib
 import schedule
+from App import App
 from settings import Reminder
+from settings import User
+
+mylist = []
+mylist.append(Reminder(User("Andrey", 1234), "10:20", "Pill", True))
+mylist.append(Reminder(User("Kate", 67894), "10:20", "Pill", True))
+mylist.append(Reminder(User("Kate", 67894), "10:25", "Pill", True))
+
+for i in mylist:
+    print(i.user.name + " " + str(i.user.chat_id))
+
+mainApp = App()
+mainApp.run()
 
 
 TOKEN = "429105357:AAHs2gkeSxYljcm8UkKRoM9lmDyJ7DPqj6g"
@@ -94,7 +107,7 @@ def parse_message(updates):
 
 def get_command(x):
     return{
-        'add': "add a reminder in format: add 'time', 'comment'",
+        'add': "add a reminder in format: /add 'time', 'comment'",
         'delete': "remove a reminder",
         'view': "get the list of reminders"
     }.get(x, ERROR_MESSAGE)

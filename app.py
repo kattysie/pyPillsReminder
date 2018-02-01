@@ -94,13 +94,18 @@ class App:
 
     def get_command(self, updates):
         text, chat_id = self.parse_message(updates)
+
+        text_1 = text[:2]
+
         if 'done' == text:
             send_message('Well done!', chat_id)
             schedule.clear('forgot')
         elif 'add' == text:
             send_message('Okay, so you want to add a reminder. Please enter it as in example: '
                          '"At 12:00 Do something important. Repeat: True"', chat_id)
-            self.write_to_file(updates)
+            self.write_to_file(updates)  # need to add code to get the NEXT message
+        elif 'at' == text_1:  # some weird method to check if parsing works
+            self.add_reminder(text, chat_id, updates)
         elif 'delete' == text:
             pass
         elif 'view' == text:
@@ -125,9 +130,20 @@ class App:
                   + "%s's reminder:  At %s do %s. Repeat: %s"
                   % (self.user.name, self.time, self.comment, str(self.repeat)))
 
-    def add_reminder(self, user, time, comment, repeat):
-        item = Reminder(User(user, self.CHAT_ID_K), time, comment, repeat)
-        self.reminder_list.append(item)
+    def add_reminder(self, text, chat_id, updates):
+        name = updates['result'][0]['message']['from']['username']
+        words = text.lower().split()
+        if 'at' == words[0] and 'do' == words[2] and 'repeat:' in words:
+            r_time = words[1]
+            i = words.index('repeat:')
+            r_comment = words[3:i]
+            repeat = bool(words[-1])
+            reminder = Reminder(User(name, chat_id), r_time, r_comment, repeat)
+            self.reminder_list.append(reminder)
+            return 'Added!'
+        else:
+            return 'Wrong format!!!'
+
 
     def del_reminder(self):
         pass

@@ -3,12 +3,13 @@ import schedule
 import json
 import requests
 import urllib
-from settings import Reminder
+# from settings import Reminder
 from settings import User
 from settings import Reminder
 
 TOKEN = "429105357:AAHs2gkeSxYljcm8UkKRoM9lmDyJ7DPqj6g"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
+
 
 def send_http_get_req(req_url):
     response = requests.get(req_url)
@@ -75,7 +76,7 @@ class App:
         self.reminder_list.append(Reminder("K", "21:45", "Pill 2", True))
         self.CHAT_ID_K = "108123177"
         self.CHAT_ID_A = "90979903"
-        self.ERROR_MESSAGE = "I don't understand you, please enter something correct"
+        self.ERROR_MESSAGE = "I don't understand '%s' please enter something correct"
         self.reminder_list_A = [{"time": "09:00", "message": "Take 200 pill"},
                            {"time": "21:00", "message": "Take 400 pill"}]
         self.reminder_list_K = [{"time": "11:15", "message": "Take a break", "repeat": 'False'},
@@ -97,16 +98,26 @@ class App:
             send_message('Well done!', chat_id)
             schedule.clear('forgot')
         elif 'add' == text:
-            pass
+            send_message('Okay, so you want to add a reminder. Please enter it as in example: '
+                         '"At 12:00 Do something important. Repeat: True"', chat_id)
+            self.write_to_file(updates)
         elif 'delete' == text:
             pass
         elif 'view' == text:
             pass
         else:
-            send_message(text, chat_id)  #not sure what it supposed to do
+            send_message(self.ERROR_MESSAGE % text, chat_id)
         return {
             'wft': "how it worked before?"
         }.get(self.ERROR_MESSAGE)
+
+    def write_to_file(self, updates):
+        text = self.parse_message(get_updates(updates))
+        with open('schedule.txt', 'a') as s_file:
+                s_file.write(time.strftime("%H:%M:%S") + ' ' + self.CHAT_ID_K + ' ' + text[0] + '\n')
+
+    def read_from_file(self):
+        pass
 
     def view_details(self):
         for reminder in self.reminder_list:
@@ -152,9 +163,6 @@ class App:
                 print("bot is not ok")
         else:
             print("bad response")
-
-
-
 
 
 

@@ -94,32 +94,32 @@ class App:
 
     def get_command(self, updates):
         text, chat_id = self.parse_message(updates)
-
-        text_1 = text[:2]
-
-        if 'done' == text:
-            send_message('Well done!', chat_id)
-            schedule.clear('forgot')
-        elif 'add' == text:
-            send_message('Okay, so you want to add a reminder. Please enter it as in example: '
-                         '"At 12:00 Do something important. Repeat: True"', chat_id)
-            self.write_to_file(updates)  # need to add code to get the NEXT message
-        elif 'at' == text_1:  # some weird method to check if parsing works
-            self.add_reminder(text, chat_id, updates)
-        elif 'delete' == text:
-            pass
-        elif 'view' == text:
-            pass
+        words =  text.lower().split()
+        print(time.strftime("%H:%M:%S") + ' ' + str(chat_id) + ' ' + text)
+        if words:
+            cmd_text = words[0]
+            if 'done' == cmd_text:
+                send_message('Well done!', chat_id)
+                schedule.clear('forgot')
+            elif 'add' == cmd_text:
+                send_message('Okay, so you want to add a reminder. Please enter it as in example: '
+                             '"At 12:00 Do something important. Repeat: True"', chat_id)
+                self.write_to_file(text, chat_id)  # need to add code to get the NEXT message
+            elif 'delete' == cmd_text:
+                pass
+            elif 'view' == cmd_text:
+                pass
+            else:
+                send_message(self.ERROR_MESSAGE % text, chat_id)
         else:
-            send_message(self.ERROR_MESSAGE % text, chat_id)
+            print('Error No words in message')
         return {
             'wft': "how it worked before?"
         }.get(self.ERROR_MESSAGE)
 
-    def write_to_file(self, updates):
-        text = self.parse_message(get_updates(updates))
+    def write_to_file(self, text, chat_id):
         with open('schedule.txt', 'a') as s_file:
-                s_file.write(time.strftime("%H:%M:%S") + ' ' + self.CHAT_ID_K + ' ' + text[0] + '\n')
+                s_file.write(time.strftime("%H:%M:%S") + ' ' + str(chat_id) + ' ' + text + '\n')
 
     def read_from_file(self):
         pass
@@ -160,6 +160,7 @@ class App:
     # commands: /help, /update
 
     def run(self):
+        print("Run...")
         last_update_id = None
         #get bot info to test bot status
         App.set_schedule(self.reminder_list_K)
@@ -168,6 +169,7 @@ class App:
         if respOk:
             bot_is_ok = bot_inf_resp['result']["is_bot"]
             if bot_is_ok:
+                print("Bot info received")
                 while True:
                     schedule.run_pending()
                     updates = get_updates(last_update_id)

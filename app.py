@@ -172,11 +172,16 @@ class App:
             if bot_is_ok:
                 print("Bot info received")
                 while True:
-                    schedule.run_pending()
-                    updates = get_updates(last_update_id)
-                    if 'result' in updates:
-                        last_update_id = get_last_update_id(updates) + 1
-                        self.get_command(updates)
+                    try:
+                        schedule.run_pending()
+                        updates = get_updates(last_update_id)
+                        if 'result' in updates and updates['result']:
+                            last_update_id = get_last_update_id(updates) + 1
+                            self.get_command(updates)
+                    except:
+                        print("Unexpected except")
+                        raise
+
                     sys.stdout.flush()
                     time.sleep(0.5)
             else:

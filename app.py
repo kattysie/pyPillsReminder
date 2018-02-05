@@ -78,19 +78,16 @@ class App:
         self.CHAT_ID_K = "108123177"
         self.CHAT_ID_A = "90979903"
         self.ERROR_MESSAGE = "I don't understand '%s' please enter something correct"
-        self.reminder_list_A = [{"time": "09:00", "message": "Take 200 pill"},
-                           {"time": "21:00", "message": "Take 400 pill"}]
-        self.reminder_list_K = [{"time": "11:15", "message": "Take a break", "repeat": 'False'},
-                                   {"time": "14:00", "message": "Have a lunch", "repeat": 'False'},
-                                   {"time": "17:10", "message": "Eat a snack",
-                                    "repeat": 'False'}]  # add repeat True/False setting
+        self.reminder_list_K = [{"time": "11:15", "message": "Take a break", "repeat": 'False', "chatid": '108123177'},
+                               {"time": "14:00", "message": "Have a lunch", "repeat": 'False', "chatid": '108123177'},
+                               {"time": "17:10", "message": "Eat a snack", "repeat": 'False', "chatid": '108123177'}]  # add repeat True/False setting
 
     reminder_list = []
 
     def set_schedule(rem_list):
         for item in rem_list:
             my_time = item["time"]
-            schedule.every().day.at(my_time).do(send_reminder, item["message"], App.CHAT_ID_K).tag('main_reminder')
+            schedule.every().day.at(my_time).do(send_reminder, item["message"], item["chatid"]).tag('main_reminder')
         return
 
     def get_command(self, updates):

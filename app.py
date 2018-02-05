@@ -90,7 +90,7 @@ class App:
     def set_schedule(rem_list):
         for item in rem_list:
             my_time = item["time"]
-            schedule.every().day.at(my_time).do(send_reminder, item["message"]).tag('main_reminder')
+            schedule.every().day.at(my_time).do(send_reminder, item["message"], App.CHAT_ID_K).tag('main_reminder')
         return
 
     def get_command(self, updates):

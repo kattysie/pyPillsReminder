@@ -67,7 +67,7 @@ def send_forgot(text, chat_id):
 def send_reminder(text, chat_id):
     url = URL + "sendMessage?text={}&chat_id={}".format("Take a pill! " + text, chat_id)
     send_http_get_req(url)
-    schedule.every(5).minutes.do(send_forgot, text + " don't forget").tag('forgot')
+    schedule.every(5).minutes.do(send_forgot, text + " don't forget", chat_id).tag('forgot')
 
 
 class App:
